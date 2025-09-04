@@ -3,145 +3,188 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Soroban — MindWorld tweak (style + sound)</title>
+<title>Soroban — стиль + звук (аккуратно)</title>
 <style>
-  :root{--bg:#F4F5FB;--wood1:#C28B58;--wood2:#8B5A2B;--rod:#7A5533;--text:#4a3b2f;}
-  *{box-sizing:border-box} html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+  :root{--bg:#F4F5FB;--wood2:#8B5A2B;--rod:#7A5533;--text:#4a3b2f}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
   .wrap{max-width:1100px;margin:0 auto;padding:16px}
-  h1{margin:4px 0 12px;font-size:22px;color:var(--wood2);text-align:center}
-  .panel{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;margin:6px 0 10px}
+  h1{margin:6px 0 12px;font-size:22px;color:var(--wood2);text-align:center}
+  .panel{display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;margin:8px 0 12px}
   .board{position:relative;width:100%;aspect-ratio:16/6;background:#f7f6fb;border-radius:24px;box-shadow:0 8px 24px rgba(0,0,0,.12)}
   svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+  /* дерево */
   .rail{fill:url(#woodGrad);filter:drop-shadow(0 4px 8px rgba(0,0,0,.25))}
   .beam{fill:url(#woodGrad);filter:drop-shadow(0 3px 6px rgba(0,0,0,.25))}
+  /* спицы */
   .rod{stroke:var(--rod);stroke-width:12;stroke-linecap:round;opacity:.95}
+  /* бусины */
   .bead{cursor:pointer;touch-action:manipulation}
   .bead-oval{fill:url(#beadGrad);filter:drop-shadow(0 4px 5px rgba(0,0,0,.26))}
   .bead-emoji{dominant-baseline:middle;text-anchor:middle;filter:drop-shadow(0 2px 2px rgba(0,0,0,.2))}
-  .controls{display:flex;gap:10px;align-items:center;justify-content:center;font-size:15px}
+  /* контролы */
   select{padding:8px 10px;border:1px solid #dad7ee;border-radius:10px;background:#fff}
-  .sound-toggle{display:flex;gap:6px;align-items:center;background:#fff;border:1px solid #e8e6f2;border-radius:10px;padding:6px 8px}
+  .sound{display:flex;gap:6px;align-items:center;background:#fff;border:1px solid #e8e6f2;border-radius:10px;padding:6px 8px}
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>Soroban (классика) — добавлены стиль и звук</h1>
-    <div class="panel">
-      <div class="controls">
-        <label>Стиль:
-          <select id="styleSelect" aria-label="Выбор стиля бусин">
-            <option value="classic" selected>Бусины</option>
-            <option value="🍓">🍓 Клубника</option>
-            <option value="⚽">⚽ Мяч</option>
-            <option value="🍎">🍎 Яблоко</option>
-            <option value="🧁">🧁 Пирожное</option>
-            <option value="🍔">🍔 Бургер</option>
-          </select>
-        </label>
-        <span class="sound-toggle"><input id="soundChk" type="checkbox" checked> Звук</span>
-      </div>
-    </div>
-
-    <div class="board" role="img" aria-label="Абакус">
-      <svg id="svg" viewBox="0 0 1600 600" preserveAspectRatio="xMidYMid meet">
-        <defs>
-          <linearGradient id="woodGrad" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#C58B55"/><stop offset="100%" stop-color="#8B5A2B"/>
-          </linearGradient>
-          <radialGradient id="beadGrad" cx="35%" cy="30%" r="65%">
-            <stop offset="0%" stop-color="#FFE3B8"/><stop offset="45%" stop-color="#FFA542"/><stop offset="100%" stop-color="#D36F17"/>
-          </radialGradient>
-        </defs>
-      </svg>
-    </div>
+<div class="wrap">
+  <h1>Soroban (классика) — добавлены стиль и звук</h1>
+  <div class="panel">
+    <label>Стиль:
+      <select id="styleSelect" aria-label="Выбор стиля">
+        <option value="classic" selected>Бусины</option>
+        <option value="🍓">🍓 Клубника</option>
+        <option value="⚽">⚽ Мяч</option>
+        <option value="🍎">🍎 Яблоко</option>
+        <option value="🧁">🧁 Пирожное</option>
+        <option value="🍔">🍔 Бургер</option>
+      </select>
+    </label>
+    <label class="sound"><input id="soundChk" type="checkbox" checked> Звук</label>
   </div>
+
+  <div class="board" role="img" aria-label="Абакус">
+    <svg id="svg" viewBox="0 0 1600 600" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <linearGradient id="woodGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#C58B55"/><stop offset="100%" stop-color="#8B5A2B"/>
+        </linearGradient>
+        <radialGradient id="beadGrad" cx="35%" cy="30%" r="65%">
+          <stop offset="0%" stop-color="#FFE3B8"/><stop offset="45%" stop-color="#FFA542"/><stop offset="100%" stop-color="#D36F17"/>
+        </radialGradient>
+        <!-- внутренняя область — обрезает эмодзи, чтобы не торчали за рамой -->
+        <clipPath id="innerClip">
+          <rect x="90" y="40" width="1420" height="520" rx="10" ry="10"/>
+        </clipPath>
+      </defs>
+    </svg>
+  </div>
+</div>
 
 <script>
 (function(){
-  var svg=document.getElementById('svg');
-  var styleSelect=document.getElementById('styleSelect');
-  var soundChk=document.getElementById('soundChk');
+  const svg = document.getElementById('svg');
+  const styleSelect = document.getElementById('styleSelect');
+  const soundChk = document.getElementById('soundChk');
 
-  var W=1600,H=600,padX=90,padY=40,sepY=290;
-  var beadR=38,beadRX=beadR+8,emojiScale=1.9,earthGap=86,rods=13;
+  // размеры и геометрия (подправлено)
+  const W=1600,H=600, padX=90,padY=40, sepY=290;
+  const beadR=36, beadRX=beadR+8;         // овальная классическая форма
+  const emojiScale=1.65;                  // уменьшили эмодзи, чтобы не «лезли»
+  const earthGap=84;                      // чуть плотнее
+  const rods=13;
 
-  var cols=[],style='classic';
-  try{var saved=localStorage.getItem('sorobanStyle'); if(saved) style=saved;}catch(e){}
+  let cols=[], style='classic';
+  try{ const s=localStorage.getItem('sorobanStyle'); if(s) style=s; }catch(e){}
 
-  var ac=null;
+  // простой «щёлк»
+  let ac=null;
   function clickSound(){
     if(!soundChk.checked) return;
     try{
       if(!ac) ac=new (window.AudioContext||window.webkitAudioContext)();
-      var o=ac.createOscillator(), g=ac.createGain();
-      o.type='square'; o.frequency.value=900; g.gain.value=0.05;
-      o.connect(g); g.connect(ac.destination); o.start(); setTimeout(function(){o.stop();},30);
+      const o=ac.createOscillator(), g=ac.createGain();
+      o.type='square'; o.frequency.value=900; g.gain.value=0.045;
+      o.connect(g); g.connect(ac.destination); o.start(); setTimeout(()=>o.stop(),28);
     }catch(e){}
+  }
+
+  function rails(parent){
+    parent.appendChild(rect(padX,padY,W-2*padX,26,'rail'));
+    parent.appendChild(rect(padX,H-padY-26,W-2*padX,26,'rail'));
+    parent.appendChild(rect(padX-20,padY,20,H-2*padY,'rail'));
+    parent.appendChild(rect(W-padX,padY,20,H-2*padY,'rail'));
+  }
+  function rect(x,y,w,h,cls){const r=doc('rect'); r.setAttribute('x',x); r.setAttribute('y',y);
+    r.setAttribute('width',w); r.setAttribute('height',h); r.setAttribute('rx',12); r.setAttribute('ry',12);
+    r.setAttribute('class',cls); return r;}
+  function line(x1,x2,y1,y2,cls){const l=doc('line'); l.setAttribute('x1',x1); l.setAttribute('x2',x2);
+    l.setAttribute('y1',y1); l.setAttribute('y2',y2); l.setAttribute('class',cls); return l;}
+  function doc(n){return document.createElementNS('http://www.w3.org/2000/svg',n);}
+
+  function makeBead(cx,cy,onTap){
+    const g=doc('g'); g.setAttribute('class','bead');
+    g.addEventListener('click',onTap,false);
+    g.addEventListener('touchend',e=>{e.preventDefault();onTap();},false);
+
+    const oval=doc('ellipse');
+    oval.setAttribute('cx',cx); oval.setAttribute('cy',cy);
+    oval.setAttribute('rx',beadRX); oval.setAttribute('ry',beadR);
+    oval.setAttribute('class','bead-oval');
+
+    const text=doc('text');
+    text.setAttribute('x',cx);
+    text.setAttribute('y',cy + 1);          // мелкий сдвиг для идеального центрирования
+    text.setAttribute('class','bead-emoji');
+    text.style.fontSize = (beadR*emojiScale)+'px';
+    text.textContent='🍓';
+
+    g.appendChild(oval); g.appendChild(text);
+    return g;
   }
 
   function init(){
     while(svg.firstChild) svg.removeChild(svg.firstChild);
-    rails(svg);
-    svg.appendChild(rect(padX,sepY-10,W-2*padX,20,'beam'));
-    var innerW=W-2*padX, gap=(rods>1)? innerW/(rods-1):0;
+
+    // слой, к которому применяем клип
+    const inner = doc('g'); inner.setAttribute('clip-path','url(#innerClip)'); svg.appendChild(inner);
+
+    // низ рамки и перекладина — внутри клипа
+    rails(inner);
+    inner.appendChild(rect(padX,sepY-10,W-2*padX,20,'beam'));
+
+    const innerW=W-2*padX, gap=(rods>1)? innerW/(rods-1):0;
     cols=[];
-    for(var i=0;i<rods;i++){
-      var cx=padX+i*gap;
-      var rod=line(cx,cx,padY+2,H-padY-2,'rod'); svg.appendChild(rod);
-      var col={heaven:0,earth:[0,0,0,0],cx:cx,beads:[]}; cols.push(col);
-      var hRest=padY+46, hActive=sepY-52;
-      var hb=makeBead(cx,hRest,function(c){return function(){c.heaven=c.heaven?0:1;clickSound();updatePositions();};}(col));
-      col.beads.push({el:hb,kind:'heaven',rest:hRest,active:hActive});
-      for(var j=0;j<4;j++){
-        var eRest=sepY+48+j*earthGap, eActive=sepY+22+j*14;
-        var eb=makeBead(cx,eRest,function(c,idx){return function(){c.earth[idx]=c.earth[idx]?0:1;clickSound();updatePositions();};}(col,j));
-        col.beads.push({el:eb,kind:'earth',idx:j,rest:eRest,active:eActive});
+    for(let i=0;i<rods;i++){
+      const cx=padX+i*gap;
+      inner.appendChild(line(cx,cx,padY+2,H-padY-2,'rod'));
+      const col={heaven:0,earth:[0,0,0,0],cx,beads:[]}; cols.push(col);
+
+      const hRest=padY+46, hActive=sepY-52;
+      const hb=makeBead(cx,hRest,()=>{col.heaven=col.heaven?0:1; clickSound(); updateCol(col);});
+      inner.appendChild(hb); col.beads.push({el:hb,kind:'heaven',rest:hRest,active:hActive});
+
+      for(let j=0;j<4;j++){
+        const eRest=sepY+48+j*earthGap, eActive=sepY+22+j*14;
+        const eb=makeBead(cx,eRest,()=>{col.earth[j]=col.earth[j]?0:1; clickSound(); updateCol(col);});
+        inner.appendChild(eb); col.beads.push({el:eb,kind:'earth',idx:j,rest:eRest,active:eActive});
       }
+      updateCol(col);
     }
-    styleSelect.value=style; applyStyle(); updatePositions();
+
+    // верх рамки поверх всего — красиво «обрезает»
+    rails(svg);
+
+    styleSelect.value=style;
+    applyStyle();
   }
 
-  function rails(p){ p.appendChild(rect(padX,padY,W-2*padX,26,'rail'));
-    p.appendChild(rect(padX,H-padY-26,W-2*padX,26,'rail'));
-    p.appendChild(rect(padX-20,padY,20,H-2*padY,'rail'));
-    p.appendChild(rect(W-padX,padY,20,H-2*padY,'rail')); }
-  function rect(x,y,w,h,cls){var r=document.createElementNS("http://www.w3.org/2000/svg","rect");
-    r.setAttribute("x",x);r.setAttribute("y",y);r.setAttribute("width",w);r.setAttribute("height",h);
-    r.setAttribute("rx",12);r.setAttribute("ry",12);r.setAttribute("class",cls);return r;}
-  function line(x1,x2,y1,y2,cls){var l=document.createElementNS("http://www.w3.org/2000/svg","line");
-    l.setAttribute("x1",x1);l.setAttribute("x2",x2);l.setAttribute("y1",y1);l.setAttribute("y2",y2);l.setAttribute("class",cls);return l;}
-
-  function makeBead(cx,cy,onTap){
-    var g=document.createElementNS("http://www.w3.org/2000/svg","g"); g.setAttribute("class","bead");
-    g.addEventListener("click",onTap,false); g.addEventListener("touchend",function(e){e.preventDefault();onTap();},false);
-    var oval=document.createElementNS("http://www.w3.org/2000/svg","ellipse");
-    oval.setAttribute("cx",cx);oval.setAttribute("cy",cy);oval.setAttribute("rx",beadRX);oval.setAttribute("ry",beadR);oval.setAttribute("class","bead-oval");
-    var text=document.createElementNS("http://www.w3.org/2000/svg","text");
-    text.setAttribute("x",cx);text.setAttribute("y",cy);text.setAttribute("class","bead-emoji");text.style.fontSize=(beadR*emojiScale)+"px";text.textContent="🍓";
-    g.appendChild(oval); g.appendChild(text); return svg.appendChild(g);
+  function updateCol(col){
+    for(const b of col.beads){
+      const y = (b.kind==='heaven') ? (col.heaven ? b.active : b.rest)
+                                    : (col.earth[b.idx] ? b.active : b.rest);
+      const g=b.el, oval=g.children[0], text=g.children[1];
+      oval.setAttribute('cx',col.cx);  oval.setAttribute('cy',y);
+      text.setAttribute('x',col.cx);   text.setAttribute('y',y+1);
+    }
   }
 
   function applyStyle(){
-    style=styleSelect.value; try{localStorage.setItem('sorobanStyle',style);}catch(e){}
-    for(var i=0;i<cols.length;i++){ for(var k=0;k<cols[i].beads.length;k++){
-      var g=cols[i].beads[k].el, oval=g.children[0], text=g.children[1];
-      if(style==='classic'){ oval.style.display='block'; text.style.display='none'; }
-      else { oval.style.display='none'; text.style.display='block'; text.textContent=style; }
-    }}
-  }
-
-  function updatePositions(){
-    for(var i=0;i<cols.length;i++){ var col=cols[i];
-      for(var k=0;k<col.beads.length;k++){ var b=col.beads[k];
-        var y=(b.kind==='heaven')?(col.heaven?b.active:b.rest):(col.earth[b.idx]?b.active:b.rest);
-        var g=b.el, oval=g.children[0], text=g.children[1];
-        oval.setAttribute('cy',y); text.setAttribute('y',y+2); var cx=col.cx; oval.setAttribute('cx',cx); text.setAttribute('x',cx);
-    }}
+    style = styleSelect.value;
+    try{ localStorage.setItem('sorobanStyle', style);}catch(e){}
+    for(const col of cols){
+      for(const b of col.beads){
+        const g=b.el, oval=g.children[0], text=g.children[1];
+        if(style==='classic'){ oval.style.display='block'; text.style.display='none'; }
+        else { oval.style.display='none'; text.style.display='block'; text.textContent=style; }
+      }
+    }
   }
 
   styleSelect.addEventListener('change',applyStyle,false);
   init();
-})(); 
+})();
 </script>
 </body>
 </html>
