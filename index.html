@@ -1,0 +1,235 @@
+{\rtf1\ansi\ansicpg1251\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 <!DOCTYPE html>\
+<html lang="ru">\
+<head>\
+<meta charset="utf-8">\
+<meta name="viewport" content="width=device-width, initial-scale=1">\
+<title>Soroban \'97 MindWorld tweak (style + sound)</title>\
+<style>\
+  :root\{\
+    --bg:#F4F5FB;\
+    --wood1:#C28B58;\
+    --wood2:#8B5A2B;\
+    --rod:#7A5533;\
+    --text:#4a3b2f;\
+  \}\
+  *\{box-sizing:border-box\}\
+  html,body\{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial\}\
+  .wrap\{max-width:1100px;margin:0 auto;padding:16px\}\
+  h1\{margin:4px 0 12px;font-size:22px;color:var(--wood2);text-align:center\}\
+  .panel\{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;margin:6px 0 10px\}\
+  .board\{position:relative;width:100%;aspect-ratio: 16/6; background:#f7f6fb;border-radius:24px;box-shadow:0 8px 24px rgba(0,0,0,.12)\}\
+  svg\{position:absolute;inset:0;width:100%;height:100%;display:block\}\
+  .rail\{fill:url(#woodGrad); filter: drop-shadow(0 4px 8px rgba(0,0,0,.25))\}\
+  .beam\{fill:url(#woodGrad); filter: drop-shadow(0 3px 6px rgba(0,0,0,.25))\}\
+  .rod\{stroke:var(--rod); stroke-width:12; stroke-linecap:round; opacity:.95\}\
+  .bead\{cursor:pointer; touch-action: manipulation;\}\
+  .bead-oval\{fill:url(#beadGrad); filter: drop-shadow(0 4px 5px rgba(0,0,0,.26));\}\
+  .bead-emoji\{dominant-baseline: middle; text-anchor: middle; filter: drop-shadow(0 2px 2px rgba(0,0,0,.2));\}\
+  .controls\{display:flex;gap:10px;align-items:center;justify-content:center;font-size:15px\}\
+  select\{padding:8px 10px;border:1px solid #dad7ee;border-radius:10px;background:#fff\}\
+  .sound-toggle\{display:flex;gap:6px;align-items:center;background:#fff;border:1px solid #e8e6f2;border-radius:10px;padding:6px 8px\}\
+</style>\
+</head>\
+<body>\
+  <div class="wrap">\
+    <h1>Soroban (\uc0\u1082 \u1083 \u1072 \u1089 \u1089 \u1080 \u1082 \u1072 ) \'97 \u1076 \u1086 \u1073 \u1072 \u1074 \u1083 \u1077 \u1085 \u1099  \u1089 \u1090 \u1080 \u1083 \u1100  \u1080  \u1079 \u1074 \u1091 \u1082 </h1>\
+    <div class="panel">\
+      <div class="controls">\
+        <label>\uc0\u1057 \u1090 \u1080 \u1083 \u1100 :\
+          <select id="styleSelect" aria-label="\uc0\u1042 \u1099 \u1073 \u1086 \u1088  \u1089 \u1090 \u1080 \u1083 \u1103  \u1073 \u1091 \u1089 \u1080 \u1085 ">\
+            <option value="classic" selected>\uc0\u1041 \u1091 \u1089 \u1080 \u1085 \u1099 </option>\
+            <option value="\uc0\u55356 \u57171 ">\u55356 \u57171  \u1050 \u1083 \u1091 \u1073 \u1085 \u1080 \u1082 \u1072 </option>\
+            <option value="\uc0\u9917 ">\u9917  \u1052 \u1103 \u1095 </option>\
+            <option value="\uc0\u55356 \u57166 ">\u55356 \u57166  \u1071 \u1073 \u1083 \u1086 \u1082 \u1086 </option>\
+            <option value="\uc0\u55358 \u56769 ">\u55358 \u56769  \u1055 \u1080 \u1088 \u1086 \u1078 \u1085 \u1086 \u1077 </option>\
+            <option value="\uc0\u55356 \u57172 ">\u55356 \u57172  \u1041 \u1091 \u1088 \u1075 \u1077 \u1088 </option>\
+          </select>\
+        </label>\
+        <span class="sound-toggle"><input id="soundChk" type="checkbox" checked> \uc0\u1047 \u1074 \u1091 \u1082 </span>\
+      </div>\
+    </div>\
+\
+    <div class="board" role="img" aria-label="\uc0\u1040 \u1073 \u1072 \u1082 \u1091 \u1089 ">\
+      <svg id="svg" viewBox="0 0 1600 600" preserveAspectRatio="xMidYMid meet">\
+        <defs>\
+          <linearGradient id="woodGrad" x1="0" y1="0" x2="1" y2="1">\
+            <stop offset="0%" stop-color="#C58B55"/>\
+            <stop offset="100%" stop-color="#8B5A2B"/>\
+          </linearGradient>\
+          <radialGradient id="beadGrad" cx="35%" cy="30%" r="65%">\
+            <stop offset="0%" stop-color="#FFE3B8"/>\
+            <stop offset="45%" stop-color="#FFA542"/>\
+            <stop offset="100%" stop-color="#D36F17"/>\
+          </radialGradient>\
+        </defs>\
+      </svg>\
+    </div>\
+  </div>\
+\
+<script>\
+(function()\{\
+  var svg = document.getElementById('svg');\
+  var styleSelect = document.getElementById('styleSelect');\
+  var soundChk = document.getElementById('soundChk');\
+\
+  var W = 1600, H = 600;\
+  var padX = 90, padY = 40;\
+  var sepY = 290;\
+  var beadR = 38, beadRX = beadR + 8, emojiScale = 1.9, earthGap = 86;\
+  var rods = 13;\
+\
+  var cols = [];\
+  var style = 'classic';\
+  try\{ var saved = localStorage.getItem('sorobanStyle'); if(saved) style = saved; \}catch(e)\{\}\
+\
+  var ac = null;\
+  function clickSound()\{\
+    if(!soundChk.checked) return;\
+    try\{\
+      if(!ac) ac = new (window.AudioContext || window.webkitAudioContext)();\
+      var o = ac.createOscillator();\
+      var g = ac.createGain();\
+      o.type = 'square';\
+      o.frequency.value = 900;\
+      g.gain.value = 0.05;\
+      o.connect(g); g.connect(ac.destination);\
+      o.start();\
+      setTimeout(function()\{ o.stop(); \}, 30);\
+    \}catch(e)\{\}\
+  \}\
+\
+  function init()\{\
+    while (svg.firstChild) svg.removeChild(svg.firstChild);\
+    rails(svg);\
+    svg.appendChild(rect(padX, sepY-10, W-2*padX, 20, 'beam'));\
+\
+    var innerW = W - 2*padX;\
+    var gap = (rods>1)? innerW/(rods-1) : 0;\
+\
+    cols = [];\
+    for(var i=0;i<rods;i++)\{\
+      var cx = padX + i*gap;\
+      var rod = document.createElementNS("http://www.w3.org/2000/svg","line");\
+      rod.setAttribute("x1", cx);\
+      rod.setAttribute("x2", cx);\
+      rod.setAttribute("y1", padY+2);\
+      rod.setAttribute("y2", H - padY-2);\
+      rod.setAttribute("class","rod");\
+      svg.appendChild(rod);\
+\
+      var col = \{heaven:0, earth:[0,0,0,0], cx:cx, beads:[]\};\
+      cols.push(col);\
+\
+      var hRest = padY + 46;\
+      var hActive = sepY - 52;\
+      var hb = makeBead(cx, hRest, function(c)\{ return function()\{ c.heaven = c.heaven?0:1; clickSound(); updatePositions(); \};\}(col));\
+      col.beads.push(\{el:hb, kind:'heaven', rest:hRest, active:hActive\});\
+\
+      for(var j=0;j<4;j++)\{\
+        var eRest = sepY + 48 + j*earthGap;\
+        var eActive = sepY + 22 + j*14;\
+        var eb = makeBead(cx, eRest, function(c,idx)\{ return function()\{ c.earth[idx] = c.earth[idx]?0:1; clickSound(); updatePositions(); \};\}(col,j));\
+        col.beads.push(\{el:eb, kind:'earth', idx:j, rest:eRest, active:eActive\});\
+      \}\
+    \}\
+    applyStyle();\
+    updatePositions();\
+  \}\
+\
+  function rails(parent)\{\
+    parent.appendChild(rect(padX, padY, W-2*padX, 26, 'rail'));\
+    parent.appendChild(rect(padX, H-padY-26, W-2*padX, 26, 'rail'));\
+    parent.appendChild(rect(padX-20, padY, 20, H-2*padY, 'rail'));\
+    parent.appendChild(rect(W-padX, padY, 20, H-2*padY, 'rail'));\
+  \}\
+\
+  function rect(x,y,w,h,cls)\{\
+    var r = document.createElementNS("http://www.w3.org/2000/svg","rect");\
+    r.setAttribute("x", x); r.setAttribute("y", y);\
+    r.setAttribute("width", w); r.setAttribute("height", h);\
+    r.setAttribute("rx", 12); r.setAttribute("ry", 12);\
+    r.setAttribute("class", cls);\
+    return r;\
+  \}\
+\
+  function makeBead(cx, cy, onTap)\{\
+    var g = document.createElementNS("http://www.w3.org/2000/svg","g");\
+    g.setAttribute("class","bead");\
+    g.addEventListener("click", onTap, false);\
+    g.addEventListener("touchend", function(e)\{ e.preventDefault(); onTap(); \}, false);\
+\
+    var oval = document.createElementNS("http://www.w3.org/2000/svg","ellipse");\
+    oval.setAttribute("cx", cx);\
+    oval.setAttribute("cy", cy);\
+    oval.setAttribute("rx", beadRX);\
+    oval.setAttribute("ry", beadR);\
+    oval.setAttribute("class","bead-oval");\
+\
+    var text = document.createElementNS("http://www.w3.org/2000/svg","text");\
+    text.setAttribute("x", cx);\
+    text.setAttribute("y", cy);\
+    text.setAttribute("class","bead-emoji");\
+    text.style.fontSize = (beadR*1.9) + "px";\
+    text.textContent = "\uc0\u55356 \u57171 ";\
+\
+    g.appendChild(oval);\
+    g.appendChild(text);\
+    return svg.appendChild(g);\
+  \}\
+\
+  function applyStyle()\{\
+    style = styleSelect.value;\
+    try\{ localStorage.setItem('sorobanStyle', style); \}catch(e)\{\}\
+    for(var i=0;i<cols.length;i++)\{\
+      for(var k=0;k<cols[i].beads.length;k++)\{\
+        var g = cols[i].beads[k].el;\
+        var oval = g.children[0];\
+        var text = g.children[1];\
+        if(style === 'classic')\{\
+          oval.style.display = 'block';\
+          text.style.display = 'none';\
+        \} else \{\
+          oval.style.display = 'none';\
+          text.style.display = 'block';\
+          text.textContent = style;\
+        \}\
+      \}\
+    \}\
+  \}\
+\
+  function updatePositions()\{\
+    for(var i=0;i<cols.length;i++)\{\
+      var col = cols[i];\
+      for(var k=0;k<col.beads.length;k++)\{\
+        var b = col.beads[k];\
+        var y = (b.kind==='heaven') ? (col.heaven ? b.active : b.rest)\
+                                    : (col.earth[b.idx] ? b.active : b.rest);\
+        var g = b.el;\
+        var oval = g.children[0];\
+        var text = g.children[1];\
+        oval.setAttribute('cy', y);\
+        text.setAttribute('y', y+2);\
+        var cx = col.cx;\
+        oval.setAttribute('cx', cx);\
+        text.setAttribute('x', cx);\
+      \}\
+    \}\
+  \}\
+\
+  styleSelect.addEventListener('change', applyStyle, false);\
+\
+  init();\
+  styleSelect.value = style;\
+  applyStyle();\
+\})(); \
+</script>\
+</body>\
+</html>\
+}
