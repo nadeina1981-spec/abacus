@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 <html lang="ru">
+  <style>
+  .mw-panel{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;margin:10px 0 12px}
+  .mw-panel select{padding:6px 10px;border:1px solid #dad7ee;border-radius:10px;background:#fff}
+  .mw-sound{display:flex;gap:6px;align-items:center;background:#fff;border:1px solid #e8e6f2;border-radius:10px;padding:6px 8px}
+  .mw-emoji{dominant-baseline:middle;text-anchor:middle;filter:drop-shadow(0 2px 2px rgba(0,0,0,.18));pointer-events:none}
+</style>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -27,7 +33,73 @@
   .hint{font-size:12px;text-align:center;opacity:.75;margin-top:10px}
 </style>
 </head>
+  <script>
+(function(){
+  var svg = document.querySelector('svg');
+  if(!svg){ console.warn('SVG не найден'); return; }
+
+  var beadNodes = Array.from(svg.querySelectorAll('ellipse, circle'));
+  var emojiLayer = document.createElementNS('http://www.w3.org/2000/svg','g');
+  svg.appendChild(emojiLayer);
+
+  var overlays=[];
+  beadNodes.forEach(function(base){
+    var cx=+(base.getAttribute('cx')||0), cy=+(base.getAttribute('cy')||0);
+    var ry=+(base.getAttribute('ry')||base.getAttribute('r')||18);
+    var fs=ry*1.6;
+    var t=document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x',cx); t.setAttribute('y',cy+1);
+    t.setAttribute('class','mw-emoji');
+    t.style.fontSize=fs+'px';
+    t.textContent='🍓';
+    t.style.display='none';
+    emojiLayer.appendChild(t);
+    overlays.push({text:t,baseEl:base});
+  });
+
+  var sel=document.getElementById('mw-style');
+  var soundChk=document.getElementById('mw-sound');
+
+  function applyStyle(){
+    var v=sel.value;
+    overlays.forEach(function(o){
+      if(v==='classic'){ o.baseEl.style.visibility='visible'; o.text.style.display='none'; }
+      else { o.baseEl.style.visibility='hidden'; o.text.style.display='block'; o.text.textContent=v; }
+    });
+  }
+  sel.addEventListener('change',applyStyle);
+
+  var ac=null;
+  function clickSound(){
+    if(!soundChk.checked) return;
+    if(!ac) ac=new (window.AudioContext||window.webkitAudioContext)();
+    var o=ac.createOscillator(), g=ac.createGain();
+    o.type='square'; o.frequency.value=880; g.gain.value=0.05;
+    o.connect(g); g.connect(ac.destination);
+    o.start(); setTimeout(()=>o.stop(),28);
+  }
+  svg.addEventListener('click',function(ev){
+    if(ev.target.tagName==='ellipse'||ev.target.tagName==='circle') clickSound();
+  });
+
+  applyStyle();
+})();
+</script>
+
 <body>
+  <div class="mw-panel" id="mw-panel" role="group" aria-label="Настройки абакуса">
+  <label>Стиль:
+    <select id="mw-style">
+      <option value="classic" selected>Бусины</option>
+      <option value="🍓">🍓 Клубника</option>
+      <option value="🧁">🧁 Пирожное</option>
+      <option value="🍔">🍔 Бургер</option>
+      <option value="🍎">🍎 Яблоко</option>
+    </select>
+  </label>
+  <label class="mw-sound"><input id="mw-sound" type="checkbox" checked> Звук</label>
+</div>
+
 <div class="wrap">
   <h1>Soroban (классика) — добавлены стиль и звук</h1>
 
