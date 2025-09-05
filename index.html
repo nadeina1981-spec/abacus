@@ -85,6 +85,133 @@
   applyStyle();
 })();
 </script>
+<script>
+/*
+  MindWorld: аккуратный патч без изменения геометрии.
+  - Находит реальные бусины автоматически (по размерам).
+  - Создаёт поверх слой с эмодзи тех же cx/cy.
+  - Делает clipPath по области всех бусин (эмодзи не вылезают за раму).
+  - Панель: селектор #mw-style, чекбокс #mw-sound.
+*/
+(function(){
+  const svg = document.querySelector('svg');
+  if(!svg) return;
+
+  // 1) Сырые кандидаты: все ellipse/circle
+  let raw = Array.from(svg.querySelectorAll('ellipse, circle'));
+
+  if(raw.length === 0) return;
+
+  // 2) Вычислим типичные размеры бусин по ry/r (чтобы отсеять углы и декор)
+  const sizes = raw.map(el => +(
+    el.getAttribute('ry') || el.getAttribute('r') || 0
+  ));
+  // Найдём "моду" (самое частое значение) среди положительных
+  const hist = {};
+  for (const s of sizes) { if (s>0) hist[Math.round(s)] = (hist[Math.round(s)]||0)+1; }
+  const mode = +Object.keys(hist).reduce((a,b)=> hist[a]>hist[b]?a:b);
+
+  // Оставим бусины с ry/r рядом с модой (±20%)
+  const beads = raw.filter(el=>{
+    const r = +(el.getAttribute('ry') || el.getAttribute('r') || 0);
+    return r>0 && Math.abs(r-mode) <= mode*0.2;
+  });
+
+  if (beads.length < 5) return; // подстраховка
+
+  // 3) Построим клип по bbox бусин (+немного полей)
+  let minX=Infinity, minY=Infinity, maxX=-Infinity, maxY=-Infinity, avgR=0;
+  beads.forEach(el=>{
+    const cx=+el.getAttribute('cx')||0, cy=+el.getAttribute('cy')||0;
+    const rx=+el.getAttribute('rx')||(+el.getAttribute('r')||0);
+    const ry=+el.getAttribute('ry')||(+el.getAttribute('r')||0);
+    minX = Math.min(minX, cx - rx);
+    maxX = Math.max(maxX, cx + rx);
+    minY = Math.min(minY, cy - ry);
+    maxY = Math.max(maxY, cy + ry);
+    avgR += ry||rx;
+  });
+  avgR /= beads.length;
+  const pad = Math.max(8, Math.round(avgR*0.35)); // небольшое поле
+
+  const defs = svg.querySelector('defs') || svg.insertBefore(document.createElementNS('http://www.w3.org/2000/svg','defs'), svg.firstChild);
+  const clip = document.createElementNS('http://www.w3.org/2000/svg','clipPath');
+  const clipId = 'mw-clip-' + Math.random().toString(36).slice(2);
+  clip.setAttribute('id', clipId);
+  const r = document.createElementNS('http://www.w3.org/2000/svg','rect');
+  r.setAttribute('x', minX - pad);
+  r.setAttribute('y', minY - pad);
+  r.setAttribute('width', (maxX-minX) + pad*2);
+  r.setAttribute('height', (maxY-minY) + pad*2);
+  defs.appendChild(clip);
+  clip.appendChild(r);
+
+  // 4) Слой для эмодзи
+  const emojiLayer = document.createElementNS('http://www.w3.org/2000/svg','g');
+  emojiLayer.setAttribute('clip-path', 'url(#'+clipId+')');
+  svg.appendChild(emojiLayer);
+
+  // 5) Создадим "накладки" для каждой бусины
+  const overlays = beads.map(base=>{
+    const cx=+(base.getAttribute('cx')||0), cy=+(base.getAttribute('cy')||0);
+    const ry=+(base.getAttribute('ry')||base.getAttribute('r')||18);
+    const fs = ry * 1.45; // размер эмодзи (чуть меньше бусины)
+    const t=document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x', cx);
+    t.setAttribute('y', cy + 0.5); // микро-смещение для оптики
+    t.setAttribute('class','mw-emoji');
+    t.style.fontSize = fs + 'px';
+    t.textContent = '🍓';
+    t.style.display = 'none';
+    emojiLayer.appendChild(t);
+    return {text:t, baseEl:base};
+  });
+
+  // 6) Переключатель стиля
+  const sel = document.getElementById('mw-style');
+  const soundChk = document.getElementById('mw-sound');
+
+  try{
+    const saved = localStorage.getItem('mwSorobanStyle');
+    if(saved) sel.value = saved;
+  }catch(e){}
+
+  function applyStyle(){
+    const v = sel.value;
+    try{ localStorage.setItem('mwSorobanStyle', v); }catch(e){}
+    for (const o of overlays) {
+      if (v === 'classic') {
+        o.baseEl.style.visibility = 'visible';
+        o.text.style.display = 'none';
+      } else {
+        o.baseEl.style.visibility = 'hidden';
+        o.text.style.display = 'block';
+        o.text.textContent = v;
+      }
+    }
+  }
+  sel.addEventListener('change', applyStyle);
+
+  // 7) Звук клика (не вмешиваемся в логику абакуса)
+  let ac = null;
+  function clickSound(){
+    if(!soundChk || !soundChk.checked) return;
+    try{
+      if(!ac) ac = new (window.AudioContext||window.webkitAudioContext)();
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.type='square'; o.frequency.value=880; g.gain.value=0.05;
+      o.connect(g); g.connect(ac.destination); o.start(); setTimeout(()=>o.stop(),28);
+    }catch(e){}
+  }
+  svg.addEventListener('click', (ev)=>{
+    const tag = ev.target.tagName;
+    if(tag==='ellipse' || tag==='circle') clickSound();
+  }, false);
+
+  // 8) Применяем изначальный стиль
+  applyStyle();
+})();
+</script>
 
 <body>
   <div class="mw-panel" id="mw-panel" role="group" aria-label="Настройки абакуса">
